@@ -14,7 +14,7 @@ torch.manual_seed(2019)
 
 
 def prepare_sequence(seq, to_ix):
-    idxs = [to_ix[w] for w in seq]
+    idxs = [to_ix.get(w, 0) for w in seq]
     return torch.tensor(idxs, dtype=torch.long)
 
 
@@ -145,11 +145,15 @@ train_reviews_path = "data/Train_reviews.csv"
 train_labels_path = "data/Train_labels.csv"
 test_reviews_path = "data/Test_labels.csv"
 test_labels_output = "outputs/Test_labels.csv"
+# train_reviews_path = "data/test_train.csv"
+# train_labels_path = "data/test_train_label.csv"
+# test_reviews_path = "data/test_test.csv"
+# test_labels_output = "outputs/Test_labels.csv"
 
 if __name__ == '__main__':
     START_TAG = "<START>"
     STOP_TAG = "<STOP>"
-    EMBEDDING_DIM = 300
+    EMBEDDING_DIM = 256
     HIDDEN_DIM = 256
 
     # Make up some training data
@@ -164,6 +168,7 @@ if __name__ == '__main__':
 
     # build dic 
     word_to_ix = {}
+    word_to_ix["<UNK>"] = 0
     for sentence, tags in training_data:
         for word in sentence:
             if word not in word_to_ix:
@@ -183,6 +188,7 @@ if __name__ == '__main__':
     # Make sure prepare_sequence from earlier in the LSTM section is loaded
     for epoch in range(
             2):  # again, normally you would NOT do 300 epochs, it is toy data
+        i = 0
         for sentence, tags in training_data:
             # Step 1. Remember that Pytorch accumulates gradients.
             # We need to clear them out before each instance
@@ -201,6 +207,9 @@ if __name__ == '__main__':
             loss.backward()
             optimizer.step()
 
+            i += 1
+            print(i)
+
     test_data = loadTestData_Phase1(test_reviews_path)
     # Check predictions after training
     with torch.no_grad():
@@ -209,5 +218,8 @@ if __name__ == '__main__':
         for i in range(length):
             precheck_sent = prepare_sequence(test_data[i], word_to_ix)
             results.append(model(precheck_sent))
+            print(i)
+        # print(test_data)
+        # print(results)
         write_labels_test(test_data, test_labels_output, results)
         # We got it!

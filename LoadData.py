@@ -32,19 +32,30 @@ def load_labels(path):
     return data
 
 def write_labels_test(reviews, path, data):
+    with open("outputs/logs2.txt", 'w', encoding='utf-8') as f:
+        le = len(reviews)
+
+        for i in range(le):
+            f.write(str(reviews[i]) + "\n")
+            f.write(str(data[i][1]) + "\n")
+    f.close()
+    
     with open(path, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         # writer.writerow([header])
         len_r = len(reviews)
-        len_data = len(len_data)
+        len_data = len(data)
         assert len_r == len_data, "Something wrong!"
         labels = {}
         for j in range(len_r):
             labels[j] = []
-            length = len(data[j])
-            line = data[j]
+            length = len(data[j][1])
+            length_r = len(reviews[j])
+            assert length == length_r, "Something wrong again!"
+            line = data[j][1]
             i = 0
             while i < length:
+                #print("fuck?")
                 if line[i] == 0:
                     bas = i
                     i += 1
@@ -52,29 +63,34 @@ def write_labels_test(reviews, path, data):
                         i += 1
                     eas = i
                     labels[j].append((bas, eas))
+                    #print("dead?")
                     continue
-                if line[i] == 2:
+                elif line[i] == 2:
                     bop = i
                     i += 1
                     while i < length and line[i] == 3:
                         i += 1
                     eop = i
                     labels[j].append((bop, eop))
+                    #print("??")
                     continue
-                if line[i] == 4:
+                else:
                     i += 1
+                    #print("where?")
                     continue
-        
+            if len(labels[j]) == 0:
+                labels[j].append((0, length_r))
+
         write_label = []
         for j in range(len_r):
             label = labels[j]
             review = reviews[j]
-            for be, ed in label:
-                li = review[be, ed]
+            for la in label:
+                li = review[la[0]: la[1]]
                 st = ""
                 for ch in li:
                     st += ch
-                wri = [str(j), st]
+                wri = [str(j+1), st]
                 write_label.append(wri)
 
         for line in write_label:
