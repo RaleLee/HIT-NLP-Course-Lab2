@@ -1,4 +1,4 @@
 {
     "python.linting.enabled": false,
-    "python.pythonPath": "D:\\Python3.7\\python.exe"
+    "python.pythonPath": "D:\\Anaconda\\envs\\pytorch-py36\\python.exe"
 }

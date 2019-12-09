@@ -5,15 +5,15 @@ import torch.nn as nn
 
 class TokenNet(nn.Module):
 
-    def __init__(self, bert_base, finetuning=False):
+    def __init__(self, bert_base, emb_size, dropout_rate, tag_class, n_class, finetuning=False):
         super().__init__()
         
         self.bert = bert_base
         
-        self.dropout = nn.Dropout(0.3)        
+        self.dropout = nn.Dropout(dropout_rate)        
        
-        self.fc_AO = nn.Linear(768, 9)
-        self.fc_CP = nn.Linear(768, 38)
+        self.fc_AO = nn.Linear(emb_size, tag_class)
+        self.fc_CP = nn.Linear(emb_size, n_class)
 
         self.finetuning = finetuning
 
@@ -48,17 +48,17 @@ class TokenNet(nn.Module):
         return logit_AO, logit_CP
         
         
-class SentimentNet(nn.Module):
+class JointSentCateNet(nn.Module):
 
-    def __init__(self, bert_base, finetuning=False):
+    def __init__(self, bert_base,emb_size, dropout_rate, Cate_class, Pola_class, finetuning=False):
         super().__init__()
         self.bert = bert_base
 
         
         # self.fc = nn.Linear(768, vocab_size)
-        self.dropout = nn.Dropout(0.3) # 
-        self.cls_categories = nn.Linear(768, 13)
-        self.cls_polarities = nn.Linear(768, 3)
+        self.dropout = nn.Dropout(dropout_rate) # 
+        self.cls_categories = nn.Linear(emb_size, Cate_class)
+        self.cls_polarities = nn.Linear(emb_size, Pola_class)
         # self.device = device
         self.finetuning = finetuning
 

@@ -21,7 +21,7 @@ from models import TokenNet, SentimentNet, UnionNet
 np.random.seed(2019)
 MAX_LEN = 48
 MAX_LEN_SENT = 8
-BATCH_SIZE = 1
+BATCH_SIZE = 16
 TEST_SIZE = 0.01
 BERT_PT_PATH = "chinese_L-12_H-768_A-12/"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -262,8 +262,8 @@ def main():
     model_view.to(device)
 
     max_f1 = 0.7
-    for epoch in range(10):
-
+    for epoch in range(100):
+        print("Epoch " + str(epoch) +":")
         train_model(model_view, train_loader)
         seq_id, seq_AO, seq_CP = test_model(model_view, test_loader)
         
@@ -302,7 +302,7 @@ def main():
                     line = ",".join(vp)
                     lines.append(line)
 
-                with open("outputs/pred_0831.csv", "w") as f:
+                with open("outputs/pred_1123.csv", "w") as f:
                     for line in lines:
                         f.write(line + "\n")
         
