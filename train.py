@@ -8,8 +8,8 @@ from Processor import Processor
 parser = argparse.ArgumentParser()
 # Training parameters
 parser.add_argument("--batch_size", "-bs", type=int, default=16)
-parser.add_argument("--bert_path", "-bp", type=str, default="../chinese_L-12_H-768_A-12/")
-parser.add_argument("--text_size", "-ts", type=float, default=0.05)
+parser.add_argument("--bert_path", "-bp", type=str, default="./chinese_L-12_H-768_A-12/")
+parser.add_argument("--test_size", "-ts", type=float, default=0.05)
 parser.add_argument("--save_dir", "-sd", type=str, default="checkpoints/")
 parser.add_argument("--random_seed", "-rs", type=int, default=0)
 parser.add_argument("--learning_rate", "-lr", type=float, default=2e-5)
@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     # Fix the random seed of Pytorch when using CPU
     torch.manual_seed(args.random_seed)
-    torch.random.manual_seed(args.random_state)
+    torch.random.manual_seed(args.random_seed)
 
     # Fix the random seed of Pytorch when using GPU
     if torch.cuda.is_available():

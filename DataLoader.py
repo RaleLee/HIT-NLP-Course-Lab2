@@ -30,14 +30,16 @@ def text_to_seq(texts, tokenizer, maxlen=48):
     input_texts = []
     # turn the text to token
     for idx, text in enumerate(texts):
-        text_id_list = [tokenizer.vocab.get(token, tokenizer.vocab["[UNK]"]) for token in text]
+        text_id_list = [
+            tokenizer.vocab.get(token, tokenizer.vocab["[UNK]"]) for token in text
+        ]
         input_texts.append(text_id_list)
 
         assert len(text_id_list) == len(text), "Error found in change text to token"
     
     # do padding
     input_ids = sequence.pad_sequences(
-        input_texts, maxlen=maxlen, dtpye="long", truncating="post", padding="post"
+        input_texts, maxlen=maxlen, dtype="long", truncating="post", padding="post"
     )
 
     # make mask for bert
@@ -129,20 +131,22 @@ def seq_to_id(maxlen=48):
     seq_As = labels.groupby("id").apply(
         lambda x: seq_to_tag(
             [
-                int(start), int(end) for start, end in zip(x["A_start"], x["A_end"])
+                (int(start), int(end))
+                for start, end in zip(x["A_start"], x["A_end"])
                 if start != " " and int(end) < maxlen
             ],
-            "A"
+            "As"
         )
     )
 
     seq_Op = labels.groupby("id").apply(
         lambda x: seq_to_tag(
             [
-                int(start), int(end) for start, end in zip(x["O_start"], x["O_end"])
+                (int(start), int(end))
+                for start, end in zip(x["O_start"], x["O_end"])
                 if start != " " and int(end) < maxlen
             ],
-            "O"
+            "Op"
         )
     )
 
@@ -168,11 +172,11 @@ def seq_to_id(maxlen=48):
 
 def pair_As_Op(As_tags, Op_tags):
     views = []
-
+    tmp = []
     for idx_As, As_tag in enumerate(As_tags):
         middle_As = (As_tag[2] + As_tag[3]) / 2
         dis = []
-        tmp = []
+        
         if len(Op_tags) == 0:
             break
         for o_t in Op_tags:
@@ -200,7 +204,7 @@ def seq_to_word(seq_id, seq_As_Op, seq_Cate_Pola, id_label, id_tag, text_review)
     '''
     To turn the encoded seq to word
     '''
-    assert seq_As_Op.shape[0] == seq_Cate_Pola[0] == len(text_review)
+    assert seq_As_Op.shape[0] == seq_Cate_Pola.shape[0] == len(text_review)
     maxlen = seq_As_Op.shape[1]
     seq_idx = np.arange(maxlen)
 
@@ -208,10 +212,10 @@ def seq_to_word(seq_id, seq_As_Op, seq_Cate_Pola, id_label, id_tag, text_review)
 
     for idx, s_ao, s_cp, text in zip(seq_id, seq_As_Op, seq_Cate_Pola, text_review):
         idx_ab = seq_idx[np.where(s_ao == 1, True, False)]
-        idx_am = seq_idx[np.where(s_ao == 2, True, False)]
+        idx_am = seq_idx[np.where(s_ao == 4, True, False)]
         idx_ae = seq_idx[np.where(s_ao == 3, True, False)]
         idx_ob = seq_idx[np.where(s_ao == 5, True, False)]
-        idx_om = seq_idx[np.where(s_ao == 6, True, False)]
+        idx_om = seq_idx[np.where(s_ao == 8, True, False)]
         idx_oe = seq_idx[np.where(s_ao == 7, True, False)]
         
         a_tags, o_tags = [], []

@@ -118,7 +118,7 @@ class Processor(object):
 
     def train_model(self, model, view_trloader):
         max_grad_norm = 1.0
-        optimizer = get_opt(model, True)
+        optimizer = self.get_opt(model, True)
         # criterion = nn.CrossEntropyLoss(ignore_index=0)
         criterion = nn.CrossEntropyLoss()
 
@@ -244,7 +244,7 @@ class Processor(object):
         df_review = read_Reviews(True)
         df_label = read_Labels()
         df_review_test = read_Reviews(False)
-        seq_id, seq_AO, seq_CP, id_to_label, id_to_term = encode_seq(maxlen=self.__max_len)
+        seq_id, seq_AO, seq_CP, id_to_label, id_to_term = seq_to_id(maxlen=self.__max_len)
         tokenizer = BertTokenizer.from_pretrained(self.__bert_path, do_lower_case=True)
         seq_input, seq_mask = text_to_seq(
             list(df_review["Reviews"]), tokenizer, maxlen=self.__max_len
@@ -265,14 +265,14 @@ class Processor(object):
             seq_id, seq_AO, seq_CP, id_to_label, id_to_term, list(df_review["Reviews"])
         )
 
-        cal_metrics(pred_vp, true_vp)
+        self.cal_metrics(pred_vp, true_vp)
 
-        view_tr, view_te = split_viewpoints(seq_id, seq_input, seq_mask, seq_AO, seq_CP)
+        view_tr, view_te = self.split_viewpoints(seq_id, seq_input, seq_mask, seq_AO, seq_CP)
 
-        train_loader, test_loader = make_viewloader(view_tr, view_te, bs=self.__batch_size)
+        train_loader, test_loader = self.make_viewloader(view_tr, view_te, bs=self.__batch_size)
 
         bert_base = BertModel.from_pretrained(self.__bert_path)
-        model_view = TokenNet(bert_base, self.__bert_embedding_size, self.__dropout_rate, self.__tag_class, self.__n_class finetuning=True)
+        model_view = TokenNet(bert_base, self.__bert_embedding_size, self.__dropout_rate, self.__tag_class, self.__n_class, finetuning=True)
 
         path_model_bert = os.path.join(self.__save_dir, "bert_best.pt")
         if os.path.exists(path_model_bert):
@@ -289,8 +289,8 @@ class Processor(object):
         max_f1 = 0.7
         for epoch in range(100):
 
-            train_model(model_view, train_loader)
-            seq_id, seq_AO, seq_CP = test_model(model_view, test_loader)
+            self.train_model(model_view, train_loader)
+            seq_id, seq_AO, seq_CP = self.test_model(model_view, test_loader)
             
             true_vp = [
             (
@@ -307,7 +307,7 @@ class Processor(object):
             pred_vp = seq_to_word(
                 seq_id, seq_AO, seq_CP, id_to_label, id_to_term, texts)
             
-            f1 = cal_metrics(pred_vp, true_vp)
+            f1 = self.cal_metrics(pred_vp, true_vp)
             
             if f1 > max_f1:
                 state = {"bert_base": bert_base.state_dict()}
@@ -319,7 +319,7 @@ class Processor(object):
 
                 lines = []
                 for rowid, row in tqdm(df_review_test.iterrows()):
-                    pred_vp = generate_result(model_view, [row['Reviews']], [row['id']], tokenizer, id_to_label, id_to_term)
+                    pred_vp = self.generate_result(model_view, [row['Reviews']], [row['id']], tokenizer, id_to_label, id_to_term)
                     if len(pred_vp) == 0:
                         pred_vp = [(str(rowid), "_", "_", "_", "_")]
 
@@ -332,9 +332,9 @@ class Processor(object):
                             f.write(line + "\n")
         
         # to change the result to phase answer
-        phase1path = "task1_answer.csv"
-        phase2path = "task2_answer.csv"
-        phase3path = "task3_answer.csv"
+        phase1path = self.__output_dir + "task1_answer.csv"
+        phase2path = self.__output_dir + "task2_answer.csv"
+        phase3path = self.__output_dir + "task3_answer.csv"
         ori = self.__output_dir + ".csv"
         convert(phase1path, phase2path, phase3path, ori)
 

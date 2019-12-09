@@ -23,8 +23,8 @@ def convert(ph1, ph2, ph3, ori):
     return
 
 if __name__ == "__main__":
-    phase1path = "outputs/phase1_11233.csv"
-    phase2path = "outputs/phase2_11233.csv"
-    phase3path = "outputs/phase3_11233.csv"
-    oripath = "outputs/pred_11233.csv"
-    convert(phase1path, phase2path, phase3path, ori)
+    phase1path = "outputs/task1_answer.csv"
+    phase2path = "outputs/task2_answer.csv"
+    phase3path = "outputs/task3_answer.csv"
+    oripath = "outputs/result.csv"
+    convert(phase1path, phase2path, phase3path, oripath)
