@@ -12,6 +12,8 @@ def convert(ph1, ph2, ph3, ori):
                     p3_writer = csv.writer(p3)
                     data = []
                     for row in csv_reader:
+                        if len(row[1]) > 6 or len(row[2]) > 6:
+                            continue
                         p1_writer.writerow(row[:-2])
                         p2_writer.writerow(row[:-1])
                         p3_writer.writerow(row)
@@ -26,5 +28,5 @@ if __name__ == "__main__":
     phase1path = "outputs/task1_answer.csv"
     phase2path = "outputs/task2_answer.csv"
     phase3path = "outputs/task3_answer.csv"
-    oripath = "outputs/result.csv"
+    oripath = "outputs/result1212.csv"
     convert(phase1path, phase2path, phase3path, oripath)
