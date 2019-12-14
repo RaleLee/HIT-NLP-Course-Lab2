@@ -7,15 +7,15 @@ from Processor import Processor
 
 parser = argparse.ArgumentParser()
 # Training parameters
-parser.add_argument("--batch_size", "-bs", type=int, default=16)
+parser.add_argument("--batch_size", "-bs", type=int, default=32)
 parser.add_argument("--bert_path", "-bp", type=str, default="./chinese_L-12_H-768_A-12/")
-parser.add_argument("--test_size", "-ts", type=float, default=0.02)
-parser.add_argument("--save_dir", "-sd", type=str, default="checkpoints/")
-parser.add_argument("--random_seed", "-rs", type=int, default=0)
-parser.add_argument("--learning_rate", "-lr", type=float, default=2e-5)
-parser.add_argument("--dropout_rate", "-dr", type=float, default=0.4)
+parser.add_argument("--test_size", "-ts", type=float, default=0.01)
+parser.add_argument("--save_dir", "-sd", type=str, default="save/")
+parser.add_argument("--random_seed", "-rs", type=int, default=2019)
+parser.add_argument("--learning_rate", "-lr", type=float, default=3e-5)
+parser.add_argument("--dropout_rate", "-dr", type=float, default=0.3)
 parser.add_argument("--output_dir", "-od", type=str, default="outputs/result")
-parser.add_argument("--epoch", "-ep", type=int, default=10)
+parser.add_argument("--epoch", "-ep", type=int, default=100)
 # Model parameters
 parser.add_argument("--max_len", "-ml", type=int, default=48)
 parser.add_argument("--max_len_sent", "-mls", type=int, default=8)

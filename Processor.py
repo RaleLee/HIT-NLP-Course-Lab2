@@ -220,7 +220,7 @@ class Processor(object):
 
         max_f1 = 0.7
         for epoch in range(self.__epoch):
-            print("Epoch" + str(epoch) + ":")
+            print("Epoch " + str(epoch) + ":")
             self.train_model(train_loader)
             seq_id, seq_AO, seq_CP = self.test_model(test_loader)
             

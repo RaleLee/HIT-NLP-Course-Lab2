@@ -28,5 +28,5 @@ if __name__ == "__main__":
     phase1path = "outputs/task1_answer.csv"
     phase2path = "outputs/task2_answer.csv"
     phase3path = "outputs/task3_answer.csv"
-    oripath = "outputs/result1212.csv"
+    oripath = "outputs/result12132.csv"
     convert(phase1path, phase2path, phase3path, oripath)
