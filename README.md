@@ -1,6 +1,6 @@
 # HIT-NLP-Course-Lab2
 模型图如下
-![Image text]()
+![Image text](https://raw.githubusercontent.com/RaleLee/HIT-NLP-Course-Lab2/master/pic/model.png?token=AHP4CKDBSTIW377STXJJ5GK56TTIU)
 ## Bi-LSTM + CRF
 运行Bi-LSTM+CRF.py即可，LoadData对其进行预处理
 ## BERT model
